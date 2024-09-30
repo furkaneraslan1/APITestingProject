@@ -78,5 +78,41 @@ namespace APITestingProject.Tests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound); 
         }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public async Task GetPostById_ShouldReturnCorrectPost(int postId)
+        {
+            var request = new RestRequest($"posts/{postId}", Method.Get);
+
+            RestResponse response = await Client.ExecuteAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.Content.Should().Contain($"\"id\": {postId}");
+        }
+
+        [Theory]
+        [InlineData("Title 1", "Body 1", 1)]
+        [InlineData("Title 2", "Body 2", 2)]
+        [InlineData("Title 3", "Body 3", 3)]
+        public async Task CreatePosts_ShouldReturnCreatedPosts(string title, string body, int userId)
+        {
+            var request = new RestRequest("posts", Method.Post);
+            request.AddJsonBody(new
+            {
+                title,
+                body,
+                userId
+            });
+
+            RestResponse response = await Client.ExecuteAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.Content.Should().Contain($"\"title\": \"{title}\"");
+        }
     }
 }
