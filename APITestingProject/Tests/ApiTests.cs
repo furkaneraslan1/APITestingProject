@@ -7,6 +7,11 @@ namespace APITestingProject.Tests
 {
     public class ApiTests : ApiTestBase
     {
+        public static IEnumerable<object[]> GetPostTestData()
+        {
+            return TestDataHelper.GetTestData("TestData/testdata.json");
+        }
+
         [Fact]
         public async Task GetPosts_ShouldReturnPosts()
         {
@@ -20,22 +25,25 @@ namespace APITestingProject.Tests
             response.Content.Should().NotBeNull();
         }
 
-        [Fact]
-        public async Task CreatePost_ShouldReturnCreatedPost()
+        [Theory]
+        [MemberData(nameof(GetPostTestData))]
+        public async Task CreatePost_ShouldReturnCreatedPost(string title, string body, string userId)
         {
             var request = new RestRequest("posts", Method.Post);
             request.AddJsonBody(new
             {
-                title = "myfirsttitle",
-                body = "myfirstbar",
-                userId = 1
+                title,
+                body,
+                userId
             });
 
             RestResponse response = await Client.ExecuteAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Content.Should().Contain("\"title\": \"myfirsttitle\"");
+            response.Content.Should().Contain($"\"title\": \"{title}\"");
+            response.Content.Should().Contain($"\"body\": \"{body}\"");
+            response.Content.Should().Contain($"\"userId\": \"{userId}\"");
         }
 
         [Fact]
