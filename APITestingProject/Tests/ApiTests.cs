@@ -19,7 +19,7 @@ namespace APITestingProject.Tests
 
             // Act
             RestResponse response = await Client.ExecuteAsync(request);
-            
+
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             response.Content.Should().NotBeNull();
@@ -84,7 +84,7 @@ namespace APITestingProject.Tests
             RestResponse response = await Client.ExecuteAsync(request);
 
             // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound); 
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Theory]
@@ -121,6 +121,46 @@ namespace APITestingProject.Tests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
             response.Content.Should().Contain($"\"title\": \"{title}\"");
+        }
+
+        [Fact]
+        public async Task GetProtectedResource_ShouldReturnOkWithValidToken()
+        {
+            var token = "valid_token";
+            var request = new RestRequest("protected/resource", Method.Get);
+            request.AddHeader("Authorization", $"Bearer {token}");
+
+            // Act
+            RestResponse response = await Client.ExecuteAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task GetProtectedResource_ShouldReturnUnauthorizedWithInvalidToken()
+        {
+            var invalidToken = "invalid_token";
+            var request = new RestRequest("protected/resource", Method.Get);
+            request.AddHeader("Authorization", $"Bearer {invalidToken}");
+
+            // Act
+            RestResponse response = await Client.ExecuteAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        [Fact]
+        public async Task GetProtectedResource_ShouldReturnUnauthorizedWithoutToken()
+        {
+            var request = new RestRequest("protected/resource", Method.Get);
+
+            // Act
+            RestResponse response = await Client.ExecuteAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
 }
