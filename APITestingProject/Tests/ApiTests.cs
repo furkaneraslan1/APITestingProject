@@ -190,5 +190,21 @@ namespace APITestingProject.Tests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
         }
+
+        [Fact]
+       public async Task GetPosts_ShouldRespondWithinTimeLimit()
+        {
+            // Arrange
+            var request = new RestRequest("posts", Method.Get);
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            // Act
+            var response = await Client.ExecuteAsync(request);
+            stopwatch.Stop();
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            stopwatch.ElapsedMilliseconds.Should().BeLessThan(100);
+        }
     }
 }
