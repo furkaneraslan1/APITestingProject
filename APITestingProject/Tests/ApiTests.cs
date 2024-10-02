@@ -162,5 +162,33 @@ namespace APITestingProject.Tests
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
+
+        [Fact]
+        public async Task CreatePost_InvalidData_ShouldReturnBadRequest()
+        {
+            var request = new RestRequest("posts", Method.Post);
+            request.AddJsonBody(new
+            {
+                title = "",
+                body = "",
+                userId = 0
+            });
+
+            RestResponse response = await Client.ExecuteAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task GetPosts_ServerError_ShouldReturnInternalServerError()
+        {
+            var request = new RestRequest("posts", Method.Get);
+
+            RestResponse response = await Client.ExecuteAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+        }
     }
 }
