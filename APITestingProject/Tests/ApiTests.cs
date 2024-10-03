@@ -18,7 +18,7 @@ namespace APITestingProject.Tests
             var request = new RestRequest("posts", Method.Get);
 
             // Act
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -37,7 +37,7 @@ namespace APITestingProject.Tests
                 userId
             });
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -58,7 +58,7 @@ namespace APITestingProject.Tests
                 userId = 1
             });
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -70,7 +70,7 @@ namespace APITestingProject.Tests
         {
             var request = new RestRequest("posts/1", Method.Delete);
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK); // JSONPlaceholder returns 200 OK, doesn't actually delete the post
@@ -81,7 +81,7 @@ namespace APITestingProject.Tests
         {
             var request = new RestRequest("posts/9999", Method.Get);
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -95,7 +95,7 @@ namespace APITestingProject.Tests
         {
             var request = new RestRequest($"posts/{postId}", Method.Get);
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -116,7 +116,7 @@ namespace APITestingProject.Tests
                 userId
             });
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -131,7 +131,7 @@ namespace APITestingProject.Tests
             request.AddHeader("Authorization", $"Bearer {token}");
 
             // Act
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -145,7 +145,7 @@ namespace APITestingProject.Tests
             request.AddHeader("Authorization", $"Bearer {invalidToken}");
 
             // Act
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -157,7 +157,7 @@ namespace APITestingProject.Tests
             var request = new RestRequest("protected/resource", Method.Get);
 
             // Act
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
@@ -174,7 +174,7 @@ namespace APITestingProject.Tests
                 userId = 0
             });
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -185,7 +185,7 @@ namespace APITestingProject.Tests
         {
             var request = new RestRequest("posts", Method.Get);
 
-            RestResponse response = await Client.ExecuteAsync(request);
+            RestResponse response = await ExecuteWithLoggingAsync(request);
 
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
