@@ -3,10 +3,16 @@ using RestSharp;
 using System.Net;
 using Xunit;
 
+
 namespace APITestingProject.Tests
 {
-    public class ApiTests : ApiTestBase
+    public class ApiTests : ApiTestBase, IClassFixture<ExtentReportsFixture>
     {
+
+        public ApiTests(ExtentReportsFixture fixture) : base(fixture)
+        {
+        }
+
         public static IEnumerable<object[]> GetPostTestData()
         {
             return TestDataHelper.GetTestData("TestData/testdata.json");
@@ -15,14 +21,15 @@ namespace APITestingProject.Tests
         [Fact]
         public async Task GetPosts_ShouldReturnPosts()
         {
-            var request = new RestRequest("posts", Method.Get);
+                // Arrange
+                var request = new RestRequest("posts", Method.Get);
 
-            // Act
-            RestResponse response = await ExecuteWithLoggingAsync(request);
+                // Act
+                RestResponse response = await ExecuteWithLoggingAsync(request);
 
-            // Assert
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-            response.Content.Should().NotBeNull();
+                // Assert
+                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                response.Content.Should().NotBeNull();
         }
 
         [Theory]
