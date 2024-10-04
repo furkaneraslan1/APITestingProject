@@ -7,16 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="TestData\testdata.csv" />
     <None Remove="TestData\testdata.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="TestData\testdata.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="TestData\testdata.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
     <PackageReference Include="ExtentReports" Version="5.0.4" />
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />

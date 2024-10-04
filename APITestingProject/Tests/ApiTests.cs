@@ -18,6 +18,11 @@ namespace APITestingProject.Tests
             return TestDataHelper.GetTestData("TestData/testdata.json");
         }
 
+        public static IEnumerable<object[]> GetPostTestDataFromCsv()
+        {
+            return CsvDataHelper.GetTestDataFromCsv("TestData/testdata.csv");
+        }
+
         [Fact]
         public async Task GetPosts_ShouldReturnPosts()
         {
@@ -35,6 +40,27 @@ namespace APITestingProject.Tests
         [Theory]
         [MemberData(nameof(GetPostTestData))]
         public async Task CreatePost_ShouldReturnCreatedPost(string title, string body, string userId)
+        {
+            var request = new RestRequest("posts", Method.Post);
+            request.AddJsonBody(new
+            {
+                title,
+                body,
+                userId
+            });
+
+            RestResponse response = await ExecuteWithLoggingAsync(request);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.Content.Should().Contain($"\"title\": \"{title}\"");
+            response.Content.Should().Contain($"\"body\": \"{body}\"");
+            response.Content.Should().Contain($"\"userId\": \"{userId}\"");
+        }
+
+        [Theory]
+        [MemberData(nameof(GetPostTestDataFromCsv))]
+        public async Task CreatePost_ShouldReturnCreatedPostCSV(string title, string body, string userId)
         {
             var request = new RestRequest("posts", Method.Post);
             request.AddJsonBody(new
